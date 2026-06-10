@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -126,6 +127,18 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    },
+    submitted: {
+      title: 'Submitted Restocking Orders',
+      none: 'No restocking orders submitted yet',
+      orderNumber: 'Order Number',
+      submittedDate: 'Submitted',
+      items: 'Items',
+      totalValue: 'Total Value',
+      leadTime: 'Lead Time',
+      expectedDelivery: 'Expected Delivery',
+      days: '{count} days',
+      status: 'Status'
     }
   },
 
@@ -188,6 +201,35 @@ export default {
     }
   },
 
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set a budget and order recommended restock items based on demand forecasts',
+    budgetLabel: 'Available Budget',
+    budgetHelp: 'Drag to set how much you can spend on restocking',
+    recommendationsTitle: 'Recommended Restock Items',
+    noRecommendations: 'No items fit within this budget. Increase the budget to see recommendations.',
+    recommendedSpend: 'Recommended Spend',
+    budgetRemaining: 'Budget Remaining',
+    itemsRecommended: 'Items Recommended',
+    unitsTotal: 'Total Units',
+    placeOrder: 'Place Order',
+    placing: 'Placing Order...',
+    orderPlaced: 'Restocking order {orderNumber} placed successfully',
+    orderError: 'Failed to place restocking order',
+    table: {
+      sku: 'SKU',
+      itemName: 'Item Name',
+      trend: 'Trend',
+      currentDemand: 'Current',
+      forecastedDemand: 'Forecasted',
+      gap: 'Demand Gap',
+      recommendedQty: 'Recommended Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total'
+    }
+  },
+
   // Filters
   filters: {
     timePeriod: 'Time Period',
@@ -204,6 +246,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
