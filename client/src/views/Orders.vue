@@ -27,6 +27,57 @@
         </div>
       </div>
 
+      <!-- Submitted Restock Orders -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submitted.title') }}</h3>
+        </div>
+        <div v-if="restockOrders.length === 0" class="no-submitted-orders">
+          {{ t('orders.submitted.none') }}
+        </div>
+        <div v-else class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('orders.submitted.orderNumber') }}</th>
+                <th>{{ t('orders.submitted.submittedDate') }}</th>
+                <th>{{ t('orders.submitted.items') }}</th>
+                <th>{{ t('orders.submitted.totalValue') }}</th>
+                <th>{{ t('orders.submitted.leadTime') }}</th>
+                <th>{{ t('orders.submitted.expectedDelivery') }}</th>
+                <th>{{ t('orders.submitted.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in restockOrders" :key="order.id">
+                <td><strong>{{ order.order_number }}</strong></td>
+                <td>{{ formatDate(order.submitted_date) }}</td>
+                <td>
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.item_sku" class="item-entry">
+                        <span class="item-name">{{ item.item_name }}</span>
+                        <span class="item-meta">
+                          {{ item.quantity }} x {{ currencySymbol }}{{ item.unit_cost }} &mdash; {{ t('orders.submitted.days', { count: item.lead_time_days }) }}
+                        </span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td><strong>{{ currencySymbol }}{{ order.total_value.toLocaleString() }}</strong></td>
+                <td>{{ t('orders.submitted.days', { count: order.max_lead_time_days }) }}</td>
+                <td>{{ formatDate(order.expected_delivery) }}</td>
+                <td><span class="badge info">{{ t('status.submitted') }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- All Orders -->
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
@@ -95,6 +146,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
 
     // Use shared filters
     const {
@@ -121,6 +173,17 @@ export default {
         error.value = 'Failed to load orders: ' + err.message
       } finally {
         loading.value = false
+      }
+    }
+
+    // Submitted restocking orders are not affected by the shared filters,
+    // so this loads once on mount and stays out of the filter watcher below.
+    const loadRestockOrders = async () => {
+      try {
+        // GET endpoint already returns most-recent-first; no client sort needed.
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        error.value = 'Failed to load restocking orders: ' + err.message
       }
     }
 
@@ -153,13 +216,17 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
